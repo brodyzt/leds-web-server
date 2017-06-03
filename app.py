@@ -2,6 +2,7 @@
 
 from flask import Flask, jsonify, render_template, request
 from flask_restful import Resource, Api
+import thread
 
 app = Flask(__name__)
 api = Api(app)
@@ -28,14 +29,16 @@ def color_to_json(color):
         }
     }
 
-myColors = {}
-
-myColor = Color("Custom", 100, 100, 100)
+myColor = Color("color", 100, 100, 100)
+myColors = {"color": myColor}
 
 
 class ColorAPI(Resource):
     def get(self, color_id):
-        return myColors[color_id].json()
+        if color_id in myColors:
+            return myColors[color_id].json()
+        else:
+            return Color("No Color Found",0,0,0).json()
 
     def put(self, color_id):
         myColors[color_id] = Color()
@@ -48,9 +51,7 @@ class ColorAPI(Resource):
 
 api.add_resource(ColorAPI, '/<string:color_id>')
 
-@app.route('/templates')
-def display():
-    return render_template("index.html")
-
 if __name__ == '__main__':
     app.run(debug=True)
+
+
