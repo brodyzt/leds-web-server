@@ -58,7 +58,7 @@ def flash():
 
 @app.route("/flash", methods=['PUT'])
 def execute():
-    thread.start_new_thread(flash, "Flash Thread")
+    thread.start_new_thread(flash, ())
     return "Flash Complete"
 
 if __name__ == '__main__':
