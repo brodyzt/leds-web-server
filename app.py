@@ -10,7 +10,7 @@ RED_PIN = 15
 GREEN_PIN = 18
 BLUE_PIN = 14
 
-STEPS = 1
+STEPS = .1
 
 pi = pigpio.pi()
 
@@ -120,6 +120,7 @@ def fade():
             g = updateColor(g, STEPS)
             setPin(BLUE_PIN, b)
             setPin(GREEN_PIN, g)
+
 
 @app.route("/fade", methods=['PUT'])
 def execute_fade():
