@@ -10,6 +10,8 @@ RED_PIN = 15
 GREEN_PIN = 18
 BLUE_PIN = 14
 
+STEPS = 1
+
 pi = pigpio.pi()
 
 app = Flask(__name__)
@@ -64,6 +66,70 @@ def flash():
 def execute():
     thread.start_new_thread(flash, ())
     return "Flash Complete"
+
+@app.route("/stopFlash", methods=['PUT'])
+def execute():
+    mode="static"
+    return "Done"
+
+def updateColor(color, step):
+    color += step
+
+    if color > 255:
+        return 255
+    if color < 0:
+        return 0
+
+    return color
+
+def fade():
+    r = 255
+    g = 0
+    b = 100
+    state = "ON"
+    global mode
+    mode = "fade"
+    while mode == "fade":
+        if r == 255 and b == 0 and g < 255:
+            g = updateColor(g, STEPS)
+            setPin(GREEN_PIN, g)
+
+        elif g == 255 and b == 0 and r > 0:
+            r = updateColor(r, -STEPS)
+            setPin(RED_PIN, r)
+
+        elif r == 0 and g == 255 and b < 255:
+            b = updateColor(b, STEPS)
+            setPin(BLUE_PIN, b)
+
+        elif r == 0 and b == 255 and g > 0:
+            g = updateColor(g, -STEPS)
+            setPin(GREEN_PIN, g)
+
+        elif g == 0 and b == 255 and r < 255:
+            r = updateColor(r, STEPS)
+            setPin(RED_PIN, r)
+
+        elif r == 255 and g == 0 and b > 0:
+            b = updateColor(b, -STEPS)
+            setPin(BLUE_PIN, b)
+
+        else:
+            b = updateColor(b, -STEPS)
+            g = updateColor(g, STEPS)
+            setPin(BLUE_PIN, b)
+            setPin(GREEN_PIN, g)
+
+@app.route("/fade", methods=['PUT'])
+def execute():
+    thread.start_new_thread(fade, ())
+    return "Flash Complete"
+
+@app.route("/stopFade", methods=['PUT'])
+def execute():
+    mode="static"
+    return "Done"
+
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0")
