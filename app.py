@@ -11,6 +11,7 @@ GREEN_PIN = 18
 BLUE_PIN = 14
 
 STEPS = .1
+FLASH_SPEED = 1
 
 pi = pigpio.pi()
 
@@ -60,12 +61,18 @@ def flash():
             setPin(GREEN_PIN, 0)
             setPin(BLUE_PIN, 0)
             state = "OFF"
-        time.sleep(1)
+        time.sleep(FLASH_SPEED)
 
 @app.route("/flash", methods=['PUT'])
 def execute_flash():
     thread.start_new_thread(flash, ())
     return "Flash Complete"
+
+@app.route("/updateFlashSpeed", methods=['PUT'])
+def execute_update_flash_speed():
+    global FLASH_SPEED
+    FLASH_SPEED = request.get_json()['FLASH_SPEED'] / 1000.0
+    return "Updated"
 
 @app.route("/stopFlash", methods=['PUT'])
 def execute_stop_flash():
