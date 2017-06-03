@@ -69,6 +69,7 @@ def execute_flash():
 
 @app.route("/stopFlash", methods=['PUT'])
 def execute_stop_flash():
+    global mode
     mode="static"
     return "Done"
 
@@ -127,6 +128,7 @@ def execute_fade():
 
 @app.route("/stopFade", methods=['PUT'])
 def execute_stop_fade():
+    global mode
     mode="static"
     return "Done"
 
