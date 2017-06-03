@@ -26,9 +26,9 @@ myColors = {"color": myColor}
 
 @app.route("/setColor", methods=['PUT'])
 def put():
-    pi.set_PRM_dutycycle(RED_PIN, request.get_json()['red'] / 255.0)
-    pi.set_PRM_dutycycle(GREEN_PIN, request.get_json()['green'] / 255.0)
-    pi.set_PRM_dutycycle(BLUE_PIN, request.get_json()['blue'] / 255.0)
+    pi.set_PWM_dutycycle(RED_PIN, request.get_json()['red'] / 255.0)
+    pi.set_PWM_dutycycle(GREEN_PIN, request.get_json()['green'] / 255.0)
+    pi.set_PWM_dutycycle(BLUE_PIN, request.get_json()['blue'] / 255.0)
     print("Color Set")
     return "Complete"
 
