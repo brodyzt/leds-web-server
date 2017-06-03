@@ -39,7 +39,6 @@ def put():
     print("Color Set")
     return "Complete"
 
-@app.route("/flash", methods=['PUT'])
 def flash():
     state = "ON"
     mode = "flash"
@@ -56,6 +55,10 @@ def flash():
             setPin(BLUE_PIN, 0)
             state = "OFF"
         time.sleep(1)
+
+@app.route("/flash", methods=['PUT'])
+def execute():
+    thread.start_new_thread(flash, "Flash Thread")
     return "Flash Complete"
 
 if __name__ == '__main__':
