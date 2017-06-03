@@ -32,11 +32,11 @@ class ColorAPI(Resource):
     def put(self, color):
         GPIO.output(RED_PIN, request.get_json()['red'])
         GPIO.output(GREEN_PIN, request.get_json()['green'])
-        GPIO.output(BLUE_Pin, request.get_json()['blue'])
+        GPIO.output(BLUE_PIN, request.get_json()['blue'])
         print("Color Set")
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0:5000")
 
 
