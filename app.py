@@ -32,6 +32,7 @@ myColors = {"color": myColor}
 
 @app.route("/setColor", methods=['PUT'])
 def put():
+    global mode
     mode = "static"
     setPin(RED_PIN, request.get_json()['red'])
     setPin(GREEN_PIN, request.get_json()['green'])
@@ -42,6 +43,7 @@ def put():
 
 def flash():
     state = "ON"
+    global mode
     mode = "flash"
     while mode == "flash":
         print(mode)
