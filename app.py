@@ -63,12 +63,12 @@ def flash():
         time.sleep(1)
 
 @app.route("/flash", methods=['PUT'])
-def execute():
+def execute_flash():
     thread.start_new_thread(flash, ())
     return "Flash Complete"
 
 @app.route("/stopFlash", methods=['PUT'])
-def execute():
+def execute_stop_flash():
     mode="static"
     return "Done"
 
@@ -121,12 +121,12 @@ def fade():
             setPin(GREEN_PIN, g)
 
 @app.route("/fade", methods=['PUT'])
-def execute():
+def execute_fade():
     thread.start_new_thread(fade, ())
     return "Flash Complete"
 
 @app.route("/stopFade", methods=['PUT'])
-def execute():
+def execute_stop_fade():
     mode="static"
     return "Done"
 
