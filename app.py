@@ -137,7 +137,7 @@ def execute_fade():
 @app.route("/updateFadeSpeed", methods=['PUT'])
 def execute_update_fade_speed():
     global STEPS
-    STEPS = request.get_json()['STEPS'] / 1000.0
+    STEPS = request.get_json()['STEPS'] / 50.0
     return "Updated"
 
 @app.route("/stopFade", methods=['PUT'])
