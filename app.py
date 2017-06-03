@@ -71,7 +71,7 @@ def execute_flash():
 @app.route("/updateFlashSpeed", methods=['PUT'])
 def execute_update_flash_speed():
     global FLASH_SPEED
-    FLASH_SPEED = request.get_json()['FLASH_SPEED'] / 1000.0
+    FLASH_SPEED = request.get_json()['FLASH_SPEED'] / 50.0
     return "Updated"
 
 @app.route("/stopFlash", methods=['PUT'])
@@ -137,7 +137,7 @@ def execute_fade():
 @app.route("/updateFadeSpeed", methods=['PUT'])
 def execute_update_fade_speed():
     global STEPS
-    STEPS = request.get_json()['STEPS'] / 50.0
+    STEPS = request.get_json()['STEPS'] / 1000.0
     return "Updated"
 
 @app.route("/stopFade", methods=['PUT'])
