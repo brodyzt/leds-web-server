@@ -128,7 +128,7 @@ def execute_fade():
     return "Flash Complete"
 
 @app.route("/updateFadeSpeed", methods=['PUT'])
-def execute_fade():
+def execute_update_fade_speed():
     global STEPS
     STEPS = request.get_json()['STEPS']
     return "Updated"
