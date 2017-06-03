@@ -7,12 +7,12 @@ import RPi.GPIO as GPIO
 
 RED_PIN = 15
 GREEN_PIN = 18
-BLUE_Pin = 14
+BLUE_PIN = 14
 
-channel_list = [RED_PIN, GREEN_PIN, BLUE_Pin]
-
-GPIO.setup(channel_list, GPIO.OUT)
 GPIO.setmode(GPIO.BOARD)
+GPIO.setup(RED_PIN, GPIO.OUT)
+GPIO.setup(GREEN_PIN, GPIO.OUT)
+GPIO.setup(BLUE_PIN, GPIO.OUT)
 
 app = Flask(__name__)
 api = Api(app)
