@@ -43,6 +43,7 @@ def flash():
     state = "ON"
     mode = "flash"
     while mode == "flash":
+        print(mode)
         if state == "OFF":
             setPin(RED_PIN, 255)
             setPin(GREEN_PIN, 255)
