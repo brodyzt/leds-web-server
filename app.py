@@ -33,6 +33,7 @@ def put():
     GPIO.output(GREEN_PIN, request.get_json()['green'])
     GPIO.output(BLUE_PIN, request.get_json()['blue'])
     print("Color Set")
+    return "Complete"
 
 
 if __name__ == '__main__':
