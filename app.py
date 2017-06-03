@@ -27,7 +27,6 @@ myColors = {"color": myColor}
 @app.route("/setColor", methods=['PUT'])
 def put():
     pi.write(RED_PIN, request.get_json()['red'] / 255)
-    print("Red: " + str(request.get_json()['red']) / 255)
     pi.write(GREEN_PIN, request.get_json()['green'] / 255)
     pi.write(BLUE_PIN, request.get_json()['blue'] / 255)
     print("Color Set")
