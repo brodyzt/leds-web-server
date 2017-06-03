@@ -37,6 +37,7 @@ def put():
     setPin(GREEN_PIN, request.get_json()['green'])
     setPin(BLUE_PIN, request.get_json()['blue'])
     print("Color Set")
+    print(mode)
     return "Complete"
 
 def flash():
