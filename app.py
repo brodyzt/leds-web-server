@@ -28,12 +28,11 @@ myColor = Color("color", 100, 100, 100)
 myColors = {"color": myColor}
 
 @app.route("/setColor", methods=['PUT'])
-class ColorAPI(Resource):
-    def put(self, color):
-        GPIO.output(RED_PIN, request.get_json()['red'])
-        GPIO.output(GREEN_PIN, request.get_json()['green'])
-        GPIO.output(BLUE_PIN, request.get_json()['blue'])
-        print("Color Set")
+def put(self, color):
+    GPIO.output(RED_PIN, request.get_json()['red'])
+    GPIO.output(GREEN_PIN, request.get_json()['green'])
+    GPIO.output(BLUE_PIN, request.get_json()['blue'])
+    print("Color Set")
 
 
 if __name__ == '__main__':
