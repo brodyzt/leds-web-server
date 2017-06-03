@@ -3,16 +3,13 @@
 from flask import Flask, jsonify, render_template, request
 from flask_restful import Resource, Api
 import thread
-import RPi.GPIO as GPIO
+import pigpio
 
 RED_PIN = 15
 GREEN_PIN = 18
 BLUE_PIN = 14
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(RED_PIN, GPIO.OUT)
-GPIO.setup(GREEN_PIN, GPIO.OUT)
-GPIO.setup(BLUE_PIN, GPIO.OUT)
+pi = pigpio.pi()
 
 app = Flask(__name__)
 api = Api(app)
@@ -29,10 +26,10 @@ myColors = {"color": myColor}
 
 @app.route("/setColor", methods=['PUT'])
 def put():
-    GPIO.output(RED_PIN, request.get_json()['red'])
+    pi.write(RED_PIN, request.get_json()['red'])
     print("Red: " + str(request.get_json()['red']))
-    GPIO.output(GREEN_PIN, request.get_json()['green'])
-    GPIO.output(BLUE_PIN, request.get_json()['blue'])
+    pi.write(GREEN_PIN, request.get_json()['green'])
+    pi.write(BLUE_PIN, request.get_json()['blue'])
     print("Color Set")
     return "Complete"
 
