@@ -127,6 +127,12 @@ def execute_fade():
     thread.start_new_thread(fade, ())
     return "Flash Complete"
 
+@app.route("/updateFadeSpeed", methods=['PUT'])
+def execute_fade():
+    global STEPS
+    STEPS = request.get_json()['STEPS']
+    return "Updated"
+
 @app.route("/stopFade", methods=['PUT'])
 def execute_stop_fade():
     global mode
