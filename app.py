@@ -164,8 +164,10 @@ def execute_turn_on():
 @app.route("/turnOff", methods=['PUT'])
 def execute_turn_off():
     global mode, is_off
-    setPins(0,0,0)
     is_off = True
+    pi.set_PWM_dutycycle(RED_PIN, 0)
+    pi.set_PWM_dutycycle(GREEN_PIN, 0)
+    pi.set_PWM_dutycycle(BLUE_PIN, 0)
     return "Done"
 
 
