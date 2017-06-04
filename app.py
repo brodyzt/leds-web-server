@@ -157,8 +157,8 @@ def execute_stop_fade():
 def execute_turn_on():
     global last_color, mode, is_off
     is_off = False
-    mode="static"
-    setPins(last_color[RED_PIN],last_color[GREEN_PIN],last_color[BLUE_PIN])
+    if mode == "static":
+        setPins(last_color[RED_PIN],last_color[GREEN_PIN],last_color[BLUE_PIN])
     return "Done"
 
 @app.route("/turnOff", methods=['PUT'])
