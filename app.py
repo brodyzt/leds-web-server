@@ -31,7 +31,7 @@ def setPins(red, green, blue):
         pi.set_PWM_dutycycle(GREEN_PIN, green)
         pi.set_PWM_dutycycle(BLUE_PIN, blue)
         global  last_color
-        if red != 0 | green != 0 | blue != 0:
+        if not (red == 0 and green == 0 | blue == 0):
             last_color[RED_PIN] = red
             last_color[GREEN_PIN] = green
             last_color[BLUE_PIN] = blue
@@ -163,8 +163,8 @@ def execute_turn_on():
 @app.route("/turnOff", methods=['PUT'])
 def execute_turn_off():
     global mode
-    mode="off"
     setPins(0,0,0)
+    mode="off"
     return "Done"
 
 
