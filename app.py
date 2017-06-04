@@ -84,7 +84,8 @@ def execute_update_flash_speed():
 @app.route("/stopFlash", methods=['PUT'])
 def execute_stop_flash():
     global mode
-    mode="static"
+    if mode == "flash":
+        mode="static"
     return "Done"
 
 def updateColor(color, step):
@@ -150,7 +151,8 @@ def execute_update_fade_speed():
 @app.route("/stopFade", methods=['PUT'])
 def execute_stop_fade():
     global mode
-    mode="static"
+    if mode == "fade":
+        mode="static"
     return "Done"
 
 @app.route("/turnOn", methods=['PUT'])
