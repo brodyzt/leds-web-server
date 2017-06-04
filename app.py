@@ -27,11 +27,11 @@ last_color = {RED_PIN: 0,
               BLUE_PIN:0 }
 
 def setPins(red, green, blue):
+    global is_off, last_color
     if not is_off:
         pi.set_PWM_dutycycle(RED_PIN, red)
         pi.set_PWM_dutycycle(GREEN_PIN, green)
         pi.set_PWM_dutycycle(BLUE_PIN, blue)
-        global  last_color
     if not (red == 0 and green == 0 | blue == 0):
         last_color[RED_PIN] = red
         last_color[GREEN_PIN] = green
@@ -39,9 +39,9 @@ def setPins(red, green, blue):
 
 
 def setPin(pin, brightness):
+    global is_off, last_color
     if not is_off:
         pi.set_PWM_dutycycle(pin, brightness)
-        global last_color
         last_color[pin] = brightness
 
 
@@ -155,8 +155,7 @@ def execute_stop_fade():
 
 @app.route("/turnOn", methods=['PUT'])
 def execute_turn_on():
-    global last_color
-    global mode
+    global last_color, mode, is_off
     is_off = False
     mode="static"
     setPins(last_color[RED_PIN],last_color[GREEN_PIN],last_color[BLUE_PIN])
@@ -164,7 +163,7 @@ def execute_turn_on():
 
 @app.route("/turnOff", methods=['PUT'])
 def execute_turn_off():
-    global mode
+    global mode, is_off
     setPins(0,0,0)
     is_off = True
     return "Done"
