@@ -19,7 +19,7 @@ app = Flask(__name__)
 api = Api(app)
 
 mode = "static"
-is_off = false
+is_off = False
 
 
 last_color = {RED_PIN: 0,
