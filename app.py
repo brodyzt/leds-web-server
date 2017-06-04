@@ -32,7 +32,7 @@ def setPins(red, green, blue):
         pi.set_PWM_dutycycle(RED_PIN, red)
         pi.set_PWM_dutycycle(GREEN_PIN, green)
         pi.set_PWM_dutycycle(BLUE_PIN, blue)
-    if not (red == 0 and green == 0 | blue == 0):
+    if not (red == 0 and green == 0 and blue == 0):
         last_color[RED_PIN] = red
         last_color[GREEN_PIN] = green
         last_color[BLUE_PIN] = blue
