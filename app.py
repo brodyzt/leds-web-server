@@ -104,7 +104,6 @@ def fade():
     b = 100
     state = "ON"
     global mode
-    mode = "fade"
     while mode == "fade":
         if r == 255 and b == 0 and g < 255:
             g = updateColor(g, STEPS)
@@ -139,7 +138,10 @@ def fade():
 
 @app.route("/fade", methods=['PUT'])
 def execute_fade():
-    thread.start_new_thread(fade, ())
+    global mode
+    if(mode != "fade"):
+        mode = "fade"
+        thread.start_new_thread(fade, ())
     return "Flash Complete"
 
 @app.route("/updateFadeSpeed", methods=['PUT'])
