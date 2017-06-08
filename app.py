@@ -35,10 +35,9 @@ def setPins(red, green, blue):
         pi.set_PWM_dutycycle(RED_PIN, red)
         pi.set_PWM_dutycycle(GREEN_PIN, green)
         pi.set_PWM_dutycycle(BLUE_PIN, blue)
-
-    current_color[RED_PIN] = red
-    current_color[GREEN_PIN] = green
-    current_color[BLUE_PIN] = blue
+        current_color[RED_PIN] = red
+        current_color[GREEN_PIN] = green
+        current_color[BLUE_PIN] = blue
 
 
 
