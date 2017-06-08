@@ -51,7 +51,7 @@ def setPin(pin, brightness):
 
 def fadeToColor(red, green, blue):
     global current_color
-    fadeTime = 30000.0
+    fadeTime = 15000.0
     redStep = (red - current_color[RED_PIN]) / fadeTime
     greenStep = (green - current_color[GREEN_PIN]) / fadeTime
     blueStep = (blue - current_color[BLUE_PIN]) / fadeTime
