@@ -35,8 +35,7 @@ def setPins(red, green, blue):
         pi.set_PWM_dutycycle(RED_PIN, red)
         pi.set_PWM_dutycycle(GREEN_PIN, green)
         pi.set_PWM_dutycycle(BLUE_PIN, blue)
-    if (red == 0 and green == 0 and blue == 0):
-        stored_color = current_color.copy()
+
     current_color[RED_PIN] = red
     current_color[GREEN_PIN] = green
     current_color[BLUE_PIN] = blue
@@ -50,7 +49,9 @@ def setPin(pin, brightness):
         current_color[pin] = brightness
 
 def fadeToColor(red, green, blue):
-    global current_color
+    global stored_color, current_color
+    if (red == 0 and green == 0 and blue == 0):
+        stored_color = current_color.copy()
     fadeTime = 1500.0
     redStep = (red - current_color[RED_PIN]) / fadeTime
     greenStep = (green - current_color[GREEN_PIN]) / fadeTime
