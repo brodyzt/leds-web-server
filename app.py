@@ -51,7 +51,7 @@ def setPin(pin, brightness):
 
 def fadeToColor(red, green, blue):
     global current_color
-    fadeTime = 1000.0
+    fadeTime = 1500.0
     redStep = (red - current_color[RED_PIN]) / fadeTime
     greenStep = (green - current_color[GREEN_PIN]) / fadeTime
     blueStep = (blue - current_color[BLUE_PIN]) / fadeTime
@@ -187,7 +187,7 @@ def execute_turn_on():
 
 @app.route("/turnOff", methods=['PUT'])
 def execute_turn_off():
-    global mode, is_off
+    global mode, is_off, stored_color
     stored_color = current_color.copy()
     fadeToColor(0,0,0)
     is_off = True
