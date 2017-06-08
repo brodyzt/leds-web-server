@@ -51,6 +51,11 @@ def fadeToColor(red, green, blue):
     global stored_color, current_color
     if (red == 0 and green == 0 and blue == 0):
         stored_color = current_color.copy()
+    else:
+        stored_color = {RED_PIN: red,
+                 GREEN_PIN:green,
+                 BLUE_PIN:blue}
+        
     fadeTime = 1500.0
     redStep = (red - current_color[RED_PIN]) / fadeTime
     greenStep = (green - current_color[GREEN_PIN]) / fadeTime
