@@ -51,7 +51,7 @@ def setPin(pin, brightness):
 
 def fadeToColor(red, green, blue):
     global current_color
-    fadeTime = 30000000.0
+    fadeTime = 300000.0
     redStep = (red - current_color[RED_PIN]) / fadeTime
     greenStep = (green - current_color[GREEN_PIN]) / fadeTime
     blueStep = (blue - current_color[BLUE_PIN]) / fadeTime
@@ -71,7 +71,7 @@ def returnColor():
 def put():
     global mode
     mode = "static"
-    setPins(request.get_json()['red'],request.get_json()['green'],request.get_json()['blue'])
+    fadeToColor(request.get_json()['red'],request.get_json()['green'],request.get_json()['blue'])
     print("Color Set")
     print(mode)
     return "Complete"
