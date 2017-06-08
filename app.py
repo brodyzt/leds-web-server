@@ -5,6 +5,7 @@ from flask_restful import Resource, Api
 import thread
 import pigpio
 import time
+from copy import copy
 
 RED_PIN = 15
 GREEN_PIN = 18
@@ -21,35 +22,49 @@ api = Api(app)
 mode = "static"
 is_off = False
 
-last_color = {RED_PIN: 0,
-              GREEN_PIN:0,
-              BLUE_PIN:0 }
+
+current_color = {RED_PIN: 0,
+                 GREEN_PIN:0,
+                 BLUE_PIN:0}
+
+stored_color = current_color.copy()
 
 def setPins(red, green, blue):
-    global is_off, last_color
+    global is_off, current_color, stored_color
     if not is_off:
         pi.set_PWM_dutycycle(RED_PIN, red)
         pi.set_PWM_dutycycle(GREEN_PIN, green)
         pi.set_PWM_dutycycle(BLUE_PIN, blue)
-    if not (red == 0 and green == 0 and blue == 0):
-        last_color[RED_PIN] = red
-        last_color[GREEN_PIN] = green
-        last_color[BLUE_PIN] = blue
+    if (red == 0 and green == 0 and blue == 0):
+        stored_color = current_color.copy()
+    current_color[RED_PIN] = red
+    current_color[GREEN_PIN] = green
+    current_color[BLUE_PIN] = blue
+
 
 
 def setPin(pin, brightness):
-    global is_off, last_color
+    global is_off, current_color
     if not is_off:
         pi.set_PWM_dutycycle(pin, brightness)
-        last_color[pin] = brightness
+        current_color[pin] = brightness
+
+def fadeToColor(red, green, blue):
+    global current_color
+    fadeTime = 300000.0
+    redStep = (red - current_color[RED_PIN]) / fadeTime
+    greenStep = (green - current_color[GREEN_PIN]) / fadeTime
+    blueStep = (blue - current_color[BLUE_PIN]) / fadeTime
+    for i in range(0, int(fadeTime)):
+        setPins(current_color[RED_PIN]+redStep,current_color[GREEN_PIN]+greenStep,current_color[BLUE_PIN]+blueStep)
 
 @app.route("/color", methods=['PUT'])
 def returnColor():
-    global last_color
+    global current_color
     return {
-            "Red": last_color[RED_PIN],
-            "Green": last_color[GREEN_PIN],
-            "Blue": last_color[BLUE_PIN]
+            "Red": current_color[RED_PIN],
+            "Green": current_color[GREEN_PIN],
+            "Blue": current_color[BLUE_PIN]
         }
 
 @app.route("/setColor", methods=['PUT'])
@@ -70,7 +85,6 @@ def flash():
         if state == "OFF":
             setPins(255, 255, 255)
             state = "ON"
-
         else:
             setPins(0, 0, 0)
             state = "OFF"
@@ -165,19 +179,18 @@ def execute_stop_fade():
 
 @app.route("/turnOn", methods=['PUT'])
 def execute_turn_on():
-    global last_color, mode, is_off
+    global current_color, mode, is_off, stored_color
     is_off = False
     if mode == "static":
-        setPins(last_color[RED_PIN],last_color[GREEN_PIN],last_color[BLUE_PIN])
+        fadeToColor(stored_color[RED_PIN], stored_color[GREEN_PIN], stored_color[BLUE_PIN])
     return "Done"
 
 @app.route("/turnOff", methods=['PUT'])
 def execute_turn_off():
     global mode, is_off
+    stored_color = current_color.copy()
+    fadeToColor(0,0,0)
     is_off = True
-    pi.set_PWM_dutycycle(RED_PIN, 0)
-    pi.set_PWM_dutycycle(GREEN_PIN, 0)
-    pi.set_PWM_dutycycle(BLUE_PIN, 0)
     return "Done"
 
 

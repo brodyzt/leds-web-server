@@ -21,9 +21,9 @@ api = Api(app)
 mode = "static"
 is_off = False
 
-last_color = {RED_PIN: 0,
-              GREEN_PIN:0,
-              BLUE_PIN:0 }
+current_color = {RED_PIN: 0,
+                 GREEN_PIN:0,
+                 BLUE_PIN:0}
 
 redVal = 0
 greenVal = 0
@@ -43,7 +43,7 @@ def setPins(red, green, blue):
     if blue < 0:
         blue = 0
 
-    global is_off, last_color
+    global is_off, current_color
     if not is_off:
         global redVal, greenVal, blueVal
         redVal = red
@@ -66,7 +66,7 @@ def fadeToColor(red, green, blue):
         setPins(redVal+redStep,greenVal+greenStep,blueVal+blueStep)
 
 def setPin(pin, brightness):
-    global is_off, last_color, redVal, greenVal, blueVal
+    global is_off, current_color, redVal, greenVal, blueVal
     if brightness > 255:
         brightness = 255
     if brightness < 0:
@@ -82,7 +82,7 @@ def setPin(pin, brightness):
 
 @app.route("/color", methods=['GET'])
 def returnColor():
-    global last_color, redVal, greenVal, blueVal
+    global current_color, redVal, greenVal, blueVal
     return jsonify({"color":{"Red": redVal, "Green": greenVal, "Blue": blueVal}})
 
 @app.route("/setColor", methods=['PUT'])
@@ -200,14 +200,14 @@ def execute_stop_fade():
     return "Done"
 
 def fadeOn():
-    fadeToColor(last_color[RED_PIN],last_color[GREEN_PIN],last_color[BLUE_PIN])
+    fadeToColor(current_color[RED_PIN], current_color[GREEN_PIN], current_color[BLUE_PIN])
 
 @app.route("/turnOn", methods=['PUT'])
 def execute_turn_on():
     global is_off
     is_off = False
     if mode == "static":
-        print last_color
+        print current_color
         thread.start_new_thread(fadeOn, ())
     return "Done"
 
@@ -225,14 +225,14 @@ def setPinsForOff(red, green, blue):
     if blue < 0:
         blue = 0
 
-    global is_off, last_color
+    global is_off, current_color
     global redVal, greenVal, blueVal
     redVal = red
     greenVal = green
     blueVal = blue
 
 def fadeOff():
-    global last_color, is_off
+    global current_color, is_off
     temp = copy(last_color)
 
     fadeTime = 300000.0
