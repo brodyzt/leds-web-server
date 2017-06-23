@@ -7,7 +7,7 @@ import pigpio
 import time
 from copy import copy
 
-RED_PIN = 15
+RED_PIN = 23
 GREEN_PIN = 18
 BLUE_PIN = 14
 
@@ -55,7 +55,7 @@ def fadeToColor(red, green, blue):
         stored_color = {RED_PIN: red,
                  GREEN_PIN:green,
                  BLUE_PIN:blue}
-        
+
     fadeTime = 1500.0
     redStep = (red - current_color[RED_PIN]) / fadeTime
     greenStep = (green - current_color[GREEN_PIN]) / fadeTime
