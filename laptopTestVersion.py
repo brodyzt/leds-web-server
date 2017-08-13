@@ -3,18 +3,17 @@
 from flask import Flask, jsonify, render_template, request
 from flask_restful import Resource, Api
 import thread
-import pigpio
 import time
 from copy import copy
+from math import ceil
 
-RED_PIN = 23
+RED_PIN = 15
 GREEN_PIN = 18
 BLUE_PIN = 14
 
 STEPS = .1
 FLASH_SPEED = 1
 
-pi = pigpio.pi()
 
 app = Flask(__name__)
 api = Api(app)
@@ -22,61 +21,78 @@ api = Api(app)
 mode = "static"
 is_off = False
 
-
 current_color = {RED_PIN: 0,
                  GREEN_PIN:0,
                  BLUE_PIN:0}
 
-stored_color = current_color.copy()
+redVal = 0
+greenVal = 0
+blueVal = 0
 
 def setPins(red, green, blue):
-    global is_off, current_color, stored_color
-    if not is_off:
-        pi.set_PWM_dutycycle(RED_PIN, red)
-        pi.set_PWM_dutycycle(GREEN_PIN, green)
-        pi.set_PWM_dutycycle(BLUE_PIN, blue)
-        current_color[RED_PIN] = red
-        current_color[GREEN_PIN] = green
-        current_color[BLUE_PIN] = blue
+    if red > 255:
+        red = 255
+    if red < 0:
+        red = 0
+    if green > 255:
+        green = 255
+    if green < 0:
+        green = 0
+    if blue > 255:
+        blue = 255
+    if blue < 0:
+        blue = 0
 
-
-
-def setPin(pin, brightness):
     global is_off, current_color
     if not is_off:
-        pi.set_PWM_dutycycle(pin, brightness)
-        current_color[pin] = brightness
+        global redVal, greenVal, blueVal
+        redVal = red
+        greenVal = green
+        blueVal = blue
+    if not (ceil(red) == 0 and ceil(green) == 0 and ceil(blue) == 0):
+        last_color[RED_PIN] = red
+        last_color[GREEN_PIN] = green
+        last_color[BLUE_PIN] = blue
+
+'''def colorsAreClose(r1,g1,b1,r2,g2,b2,threshold):
+    return r1+g1+b1-r2-g2-b2 < threshold'''
 
 def fadeToColor(red, green, blue):
-    global stored_color, current_color
-    if (red == 0 and green == 0 and blue == 0):
-        stored_color = current_color.copy()
-    else:
-        stored_color = {RED_PIN: red,
-                 GREEN_PIN:green,
-                 BLUE_PIN:blue}
-
-    fadeTime = 1500.0
-    redStep = (red - current_color[RED_PIN]) / fadeTime
-    greenStep = (green - current_color[GREEN_PIN]) / fadeTime
-    blueStep = (blue - current_color[BLUE_PIN]) / fadeTime
+    fadeTime = 300000.0
+    redStep = (red - redVal) / fadeTime
+    greenStep = (green - greenVal) / fadeTime
+    blueStep = (blue - blueVal) / fadeTime
     for i in range(0, int(fadeTime)):
-        setPins(current_color[RED_PIN]+redStep,current_color[GREEN_PIN]+greenStep,current_color[BLUE_PIN]+blueStep)
+        setPins(redVal+redStep,greenVal+greenStep,blueVal+blueStep)
 
-@app.route("/color", methods=['PUT'])
+def setPin(pin, brightness):
+    global is_off, current_color, redVal, greenVal, blueVal
+    if brightness > 255:
+        brightness = 255
+    if brightness < 0:
+        brightness = 0
+    if not is_off:
+        if pin == RED_PIN:
+            redVal = brightness
+        if pin == GREEN_PIN:
+            greenVal = brightness
+        if pin == BLUE_PIN:
+            blueVal = brightness
+        last_color[pin] = brightness
+
+@app.route("/color", methods=['GET'])
 def returnColor():
-    global current_color
-    return {
-            "Red": current_color[RED_PIN],
-            "Green": current_color[GREEN_PIN],
-            "Blue": current_color[BLUE_PIN]
-        }
+    global current_color, redVal, greenVal, blueVal
+    return jsonify({"color":{"Red": redVal, "Green": greenVal, "Blue": blueVal}})
 
 @app.route("/setColor", methods=['PUT'])
 def put():
     global mode
     mode = "static"
-    fadeToColor(request.get_json()['red'],request.get_json()['green'],request.get_json()['blue'])
+    red = request.get_json()['red']
+    green = request.get_json()['green']
+    blue = request.get_json()['blue']
+    thread.start_new_thread(fadeToColor, (red,green,blue))
     print("Color Set")
     print(mode)
     return "Complete"
@@ -90,6 +106,7 @@ def flash():
         if state == "OFF":
             setPins(255, 255, 255)
             state = "ON"
+
         else:
             setPins(0, 0, 0)
             state = "OFF"
@@ -182,20 +199,55 @@ def execute_stop_fade():
         mode="static"
     return "Done"
 
+def fadeOn():
+    fadeToColor(current_color[RED_PIN], current_color[GREEN_PIN], current_color[BLUE_PIN])
+
 @app.route("/turnOn", methods=['PUT'])
 def execute_turn_on():
-    global current_color, mode, is_off, stored_color
+    global is_off
     is_off = False
     if mode == "static":
-        fadeToColor(stored_color[RED_PIN], stored_color[GREEN_PIN], stored_color[BLUE_PIN])
+        print current_color
+        thread.start_new_thread(fadeOn, ())
     return "Done"
+
+def setPinsForOff(red, green, blue):
+    if red > 255:
+        red = 255
+    if red < 0:
+        red = 0
+    if green > 255:
+        green = 255
+    if green < 0:
+        green = 0
+    if blue > 255:
+        blue = 255
+    if blue < 0:
+        blue = 0
+
+    global is_off, current_color
+    global redVal, greenVal, blueVal
+    redVal = red
+    greenVal = green
+    blueVal = blue
+
+def fadeOff():
+    global current_color, is_off
+    temp = copy(last_color)
+
+    fadeTime = 300000.0
+    redStep = (-redVal) / fadeTime
+    greenStep = (-greenVal) / fadeTime
+    blueStep = (-blueVal) / fadeTime
+    for i in range(0, int(fadeTime)):
+        setPinsForOff(redVal + redStep, greenVal + greenStep, blueVal + blueStep)
+
+    last_color = temp
 
 @app.route("/turnOff", methods=['PUT'])
 def execute_turn_off():
-    global mode, is_off, stored_color
-    stored_color = current_color.copy()
-    fadeToColor(0,0,0)
     is_off = True
+    thread.start_new_thread(fadeOff, ())
     return "Done"
 
 
