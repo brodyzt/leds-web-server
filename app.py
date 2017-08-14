@@ -129,6 +129,7 @@ def fade():
     b = 100
     state = "ON"
     global mode
+    fadeToColor(255,0,100)
     while mode == "fade":
         if r == 255 and b == 0 and g < 255:
             g = updateColor(g, STEPS)
