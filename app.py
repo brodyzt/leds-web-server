@@ -29,6 +29,15 @@ current_color = {RED_PIN: 0,
 
 stored_color = current_color.copy()
 
+@app.route("/updateDimmer", methods=['PUT'])
+def execute_update_flash_speed():
+    global current_color
+    dimmer = request.get_json()['Dimmer'] / 100.0
+    red = current_color[RED_PIN] * dimmer
+    green = current_color[GREEN_PIN] * dimmer
+    blue = current_color[BLUE_PIN] * dimmer
+    setPins(red, green, blue)
+
 def setPins(red, green, blue):
     global is_off, current_color, stored_color
     if not is_off:
