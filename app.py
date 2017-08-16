@@ -29,14 +29,7 @@ current_color = {RED_PIN: 0,
 
 stored_color = current_color.copy()
 
-@app.route("/updateDimmer", methods=['PUT'])
-def execute_update_dimmer():
-    global current_color
-    dimmer = request.get_json()['Dimmer'] / 100.0
-    red = current_color[RED_PIN] * dimmer
-    green = current_color[GREEN_PIN] * dimmer
-    blue = current_color[BLUE_PIN] * dimmer
-    setPins(red, green, blue)
+
 
 def setPins(red, green, blue):
     global is_off, current_color, stored_color
@@ -71,6 +64,16 @@ def fadeToColor(red, green, blue):
     blueStep = (blue - current_color[BLUE_PIN]) / fadeTime
     for i in range(0, int(fadeTime)):
         setPins(current_color[RED_PIN]+redStep,current_color[GREEN_PIN]+greenStep,current_color[BLUE_PIN]+blueStep)
+
+@app.route("/updateDimmer", methods=['PUT'])
+def execute_update_dimmer():
+    global current_color
+    dimmer = request.get_json()['Dimmer'] / 100.0
+    red = current_color[RED_PIN] * dimmer
+    green = current_color[GREEN_PIN] * dimmer
+    blue = current_color[BLUE_PIN] * dimmer
+    fadeToColor(red, green, blue)
+    return "Complete"
 
 @app.route("/color", methods=['PUT'])
 def returnColor():
