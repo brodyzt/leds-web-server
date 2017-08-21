@@ -7,9 +7,9 @@ import pigpio
 import time
 from copy import copy
 
-RED_PIN = 23
-GREEN_PIN = 18
-BLUE_PIN = 14
+RED_PIN = 18
+GREEN_PIN = 27
+BLUE_PIN = 17
 
 STEPS = .1
 FLASH_SPEED = 1
