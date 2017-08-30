@@ -1,4 +1,5 @@
 #!flask/bin/python
+#Credit for fading function: https://github.com/dordnung/raspberrypi-ledstrip/blob/master/fading.py
 
 from flask import Flask, jsonify, render_template, request
 from flask_restful import Resource, Api
